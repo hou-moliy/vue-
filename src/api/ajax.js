@@ -2,6 +2,8 @@
 ajax请求函数模块
 返回值：promise对象（异步返回的数据是response.data的数据）
 */
+import axios from 'axios'
+// eslint-disable-next-line no-undef
 export default function ajax (url, data = {}, type = 'GET') {
   return new Promise(function (resolve, reject) {
     // 执行异步的ajax请求

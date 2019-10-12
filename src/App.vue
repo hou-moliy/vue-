@@ -6,14 +6,27 @@
 </template>
 
 <script>
+/* eslint-disable */
 // 导入路由组件
 import FooterGuide from './components/FooterGuide/FooterGuide.vue'
+//导入辅助函数
+import {mapActions}from 'vuex'
+
 export default {
+  mounted () {
+    // this.$store.dispatch('getAddress')
+    this.getAddress()
+    this.getFoodTypes()
+  },
+  methods:{
+    ...mapActions(['getAddress','getFoodTypes'])
+  },
   components: {
-    // eslint-disable-next-line no-undef
     FooterGuide
   }
+
 }
+/* eslint-enable */
 </script>
 
 <style lang="stylus" scoped rel="stylesheet">

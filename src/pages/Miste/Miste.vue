@@ -2,7 +2,7 @@
   <!--首页外卖-->
   <section class="msite">
     <!--首页头部-->
-    <HeaderTop title="成都市武侯区桐梓林（棕树南街225号）">
+    <HeaderTop :title="address.name">
       <span class="header_search" slot="left">
         <i class="iconfont icon-sousuo"></i>
       </span>
@@ -124,13 +124,14 @@
   </section>
 </template>
 <script>
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable */
 import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
-// eslint-disable-next-line no-unused-vars
 import Swiper from 'swiper'
 import 'swiper/css/swiper.min.css'
 // 导入ShopList组件
 import ShopList from '../../components/ShopList/ShopList.vue'
+//引入辅助函数
+import {mapState} from 'vuex'
 
 export default {
   mounted () {
@@ -147,8 +148,12 @@ export default {
   components: {
     HeaderTop,
     ShopList
+  },
+  computed:{
+    ...mapState(['address','foodtypes'])
   }
 }
+/* eslint-enable */
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixins.styl"

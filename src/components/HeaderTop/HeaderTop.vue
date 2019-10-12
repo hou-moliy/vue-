@@ -15,6 +15,8 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
+
 export default {
   props: {
     title: String
@@ -36,8 +38,10 @@ export default {
         this.flag = true
       }
     }
-  }
+  },
+
 }
+/* eslint-enable */
 </script>
 <style lang="stylus" rel="stylesheet/stylus.css">
   .header
