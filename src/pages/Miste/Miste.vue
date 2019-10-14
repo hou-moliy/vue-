@@ -12,7 +12,7 @@
     </HeaderTop>
     <!--首页导航-->
     <nav class="msite_nav">
-      <div class="swiper-container">
+      <div class="swiper-container" v-if="foodtypes.length>0">
         <div class="swiper-wrapper">
           <div class="swiper-slide" v-for="(types,index) in foodtypesArr" :key="index">
             <a href="javascript:" class="link_to_food" v-for="(type,index) in types" :key="index">
@@ -26,6 +26,7 @@
         <!-- Add Pagination -->
         <div class="swiper-pagination"></div>
       </div>
+      <img src="./images/msite_back.svg" alt="" v-else="">
     </nav>
     <!--首页附近商家-->
     <ShopList></ShopList>

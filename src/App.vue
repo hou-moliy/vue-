@@ -17,9 +17,11 @@ export default {
     // this.$store.dispatch('getAddress')
     this.getAddress()
     this.getFoodTypes()
+    this.getShops()
+
   },
   methods:{
-    ...mapActions(['getAddress','getFoodTypes'])
+    ...mapActions(['getAddress','getFoodTypes','getShops'])
   },
   components: {
     FooterGuide
