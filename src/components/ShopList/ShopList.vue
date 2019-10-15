@@ -16,14 +16,15 @@
                 <section class="shop_detail_header">
                   <h4 class="shop_title ellipsis">{{shop.name}}</h4>
                   <ul class="shop_detail_ul">
-                    <li class="supports" v-for="(support,index) in shop.supports" :key="index">{{support.icon_name}}</li>
+                    <li class="supports" v-for="(support,index) in shop.supports" :key="index">{{support.icon_name}}
+                    </li>
                   </ul>
                 </section>
                 <section class="shop_rating_order">
                   <section class="shop_rating_order_left">
-                         <Star :score="shop.rating" :size="24"></Star>
+                    <Star :score="shop.rating" :size="24"></Star>
                     <div class="rating_section">
-                     {{shop.rating}}
+                      {{shop.rating}}
                     </div>
                     <div class="order_section">
                       月售{{shop.recent_order_num}}单
@@ -56,21 +57,22 @@
 </template>
 <script>
   import {mapState} from 'vuex'
-  import  Star  from '../Star/Star.vue'
-export default {
-   data(){
-     return{
-       baseImgUrl:"http://cangdu.org:8001/img/"
-     }
-   },
+  import Star from '../Star/Star.vue'
 
-    computed:{
+  export default {
+    data () {
+      return {
+        baseImgUrl: 'http://cangdu.org:8001/img/'
+      }
+    },
+
+    computed: {
       ...mapState(['shops'])
     },
-  components:{
-     Star
+    components: {
+      Star
+    }
   }
-}
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixins.styl"
