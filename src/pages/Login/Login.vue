@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="login_content">
-        <form>
+        <form @submit.prevent="login">
           <div :class="{on:loginWay}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
@@ -19,7 +19,7 @@
               </button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码">
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -29,7 +29,7 @@
           <div :class="{on:!loginWay}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                <input type="text" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name">
               </section>
               <section class="login_verification">
                 <input type="text" maxlength="8" placeholder="密码"
@@ -42,8 +42,9 @@
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
+                <img class="get_verification" src="http://localhost:4000/captcha"
+                     alt="captcha" @click="getCaptcha" ref="captcha">
               </section>
             </section>
           </div>
@@ -55,9 +56,14 @@
         <i class="iconfont icon-jiantou-px-"></i>
       </a>
     </div>
+    <AlterTip :alert-text="alertText" v-show="showAlert" @closeTip="closeTip"></AlterTip>
   </section>
+
 </template>
 <script>
+  import AlterTip from '../../components/AlertTip/AlterTip.vue'
+  import {reqSendCode, reqLoginSms, reqPwdLogin} from '../../api'
+
   export default {
     data () {
       return {
@@ -66,6 +72,11 @@
         computerTime: 0,//代表计时的时间
         showPwd: false,//是否显示密码
         pwd: '',//密码
+        code: '',//手机号登陆的短信验证码
+        name: '',//邮箱，手机，账号登陆
+        captcha: '',//图形验证码
+        alertText: '',//提示文本
+        showAlert: false,//是否显示提示框
       }
     },
     methods: {
@@ -73,21 +84,109 @@
         // 点击返回，使用程序化导航
         this.$router.go(-1)
       },
-      getCode () {
+      //异步获取短信验证码
+      async getCode () {
 
         //如果当前没有计时
         if (!this.computerTime) {
           //启动倒计时
-          this.computerTime = 60
-          const timeId = setInterval(() => {
+          this.computerTime = 30
+          this.timeId = setInterval(() => {
             this.computerTime--
             if (this.computerTime <= 0) {
-              clearInterval()
+              //停止计时
+              clearInterval(this.timeId)
             }
           }, 1000)
 
           //发送ajax请求（向指定手机号发送短信验证码）
+          const result = await reqSendCode(this.phone)
+          console.log(result)
+          console.log(this.phone)
+          if (result.code === 1) {
+            //显示提示框
+            this.ShowAlert(result.msg)
+            //停止计时器
+            if (this.computerTime) {
+              this.computerTime = 0
+              clearInterval(this.timeId)
+              this.timeId = undefined
+            }
+          }
         }
+      },
+      //抽取一个函数
+      ShowAlert (alertText) {
+        this.showAlert = true
+        this.alertText = alertText
+      },
+      async login () {
+        //前台表单验证
+        //1.先判断是什么登陆方式
+        let result
+        if (this.loginWay) {
+          //2.短信验证要的是手机号验证，短信验证码验证，正确手机号验证
+          const {rightPhone, phone, code} = this
+          if (!this.rightPhone) {//如果手机号格式不对，就提示错误
+            this.ShowAlert('手机号格式不正确，请重新填写')
+          }//正确就继续判定，短信验证码是否正确 /^\d{6}$/.test(code),格式不对就提示错误
+          else if (!/^\d{6}$/.test(code)) {
+
+            this.ShowAlert('短信验证码格式不正确，请重新填写')
+            return
+          }
+          //发送ajax请求短信登陆
+          result = await reqLoginSms(phone, code)
+
+        } else {
+          //3.密码登陆验证要的是用户名验证，密码验证，图形验证码验证
+          const {name, pwd, captcha} = this
+          if (!this.name) {
+            //验证用户名是否有填写，否则提示错误
+            this.ShowAlert('用户名必须填写')
+          } else if (!this.pwd) {
+            //验证密码是否有填写，否则提示错误
+          } else if (!this.captcha) {
+            //验证图形验证码是否有填写，否则提示错误
+            this.ShowAlert('图形必须填写')
+            return
+          }
+          //发送ajax请求密码登陆
+          result = await reqPwdLogin({name, pwd, captcha})
+
+        }
+         //停止计时器
+            if (this.computerTime) {
+              this.computerTime = 0
+              clearInterval(this.timeId)
+              this.timeId = undefined
+            }
+        //根据结果数据处理
+
+          if (result.code == 0) {
+            const user = result.data
+            //将user保存到vuex的state
+
+            //去个人中心界面
+            this.$router.replace('/profile')
+          } else {
+            //显示新的图片验证码
+            const msg = result.msg
+            this.getCaptcha()
+            //显示警告提示框
+            this.ShowAlert(msg)
+          }
+
+      },
+      closeTip () {
+        //关闭警告框函数
+        this.showAlert = false
+        this.alertText = ''
+      },
+      getCaptcha () {
+        //获取一个新的图片验证码
+        //每次指定的src要不一样才可以，这里
+        this.$refs.captcha.src = 'http://localhost:4000/captcha?time' + Date.now()
       }
 
     },
@@ -97,8 +196,8 @@
         return Rex.test(this.phone)
       },
     },
-    props:{
-
+    components: {
+      AlterTip
     }
   }
 </script>
@@ -223,8 +322,9 @@
                   background #fff
                   box-shadow 0 2px 4px 0 rgba(0, 0, 0, .1)
                   transition transform .3s
+
                   &.right
-                     transform translateX(30px)
+                    transform translateX(30px)
 
             .login_hint
               margin-top 12px
