@@ -12,6 +12,11 @@ import Search from '../pages/Search/Search.vue'
 // eslint-disable-next-line no-unused-vars
 import Login from '../pages/Login/Login.vue'
 
+import Shop from '../pages/Shop/Shop.vue'
+import ShopGoods from '../pages/Shop/ShopGoods/ShopGoods.vue'
+import ShopRatings from '../pages/Shop/ShopRatings/ShopRatings.vue'
+import ShopInfo from '../pages/Shop/ShopInfo/ShopInfo.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -52,6 +57,30 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {//商家
+      path: '/shop',
+      name: 'shop',
+      component: Shop,
+      children: [
+        {//商家下的食物列表
+          path: '/shop/shopgoods',
+          component: ShopGoods
+        },
+        {//商家下的评价
+          path: '/shop/shopratings',
+          component: ShopRatings
+        },
+        {//商家下的商家信息
+          path: '/shop/shopinfo',
+          component: ShopInfo
+        },
+        { // 商家页面重定向
+          path: '',//表示已经请求到了shop
+          redirect: '/shopgoods'
+        }
+      ]
+
     }
   ],
   linkActiveClass: 'on'// 这是覆盖默认的路由高亮的类，默认的类叫做router-link-active
