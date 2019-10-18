@@ -63,7 +63,7 @@
 <script>
   import AlterTip from '../../components/AlertTip/AlterTip.vue'
   import {reqSendCode, reqLoginSms, reqPwdLogin} from '../../api'
-
+  import {mapActions} from 'vuex'
   export default {
     data () {
       return {
@@ -166,7 +166,7 @@
           if (result.code == 0) {
             const user = result.data
             //将user保存到vuex的state
-
+              this.$store.dispatch('recordUser',user)
             //去个人中心界面
             this.$router.replace('/profile')
           } else {
@@ -187,9 +187,11 @@
         //获取一个新的图片验证码
         //每次指定的src要不一样才可以，这里
         this.$refs.captcha.src = 'http://localhost:4000/captcha?time' + Date.now()
-      }
+      },
+
 
     },
+
     computed: {
       rightPhone () {
         let Rex = new RegExp(/^[1]\d{10}/)

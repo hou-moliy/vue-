@@ -9,14 +9,20 @@ import {
 
   RECEIVE_FOODTYPES,
 
-  RECEIVE_SHOPS
+  RECEIVE_SHOPS,
+
+  RECIVE_USERINFO,
+
+  RESET_USERINFO
 } from './mutation-types.js'
 
 //导入对应的api接口函数
 import {
   reqAddress,
   reqFoodTypes,
-  reqShops
+  reqShops,
+  reqUserinfo,
+  reqLogOut
 
 } from '../api'
 
@@ -25,13 +31,13 @@ export default {
   async getAddress ({commit, state}) {
     //发送异步ajax请求
     //首先要从state里面取出数据
-    const geohash =state.latitude + ',' + state.longitude
+    const geohash = state.latitude + ',' + state.longitude
     const result = await reqAddress(geohash)
 
     //提交一个mutation
-    if (result.code===0){
-      const address= result.data
-      commit(RECEIVE_ADDRESS,{address})
+    if (result.code === 0) {
+      const address = result.data
+      commit(RECEIVE_ADDRESS, {address})
     }
   },
   //异步获取食品分类列表
@@ -41,9 +47,9 @@ export default {
     const result = await reqFoodTypes()
 
     //提交一个mutation
-    if (result.code===0){
-      const foodtypes= result.data
-      commit(RECEIVE_FOODTYPES,{foodtypes})
+    if (result.code === 0) {
+      const foodtypes = result.data
+      commit(RECEIVE_FOODTYPES, {foodtypes})
     }
   },
 
@@ -56,9 +62,30 @@ export default {
     const result = await reqShops(longitude, latitude)
 
     //提交一个mutation
+    if (result.code === 0) {
+      const shops = result.data
+      commit(RECEIVE_SHOPS, {shops})
+    }
+  },
+
+  //同步记录user信息
+  recordUser ({commit}, userInfo) {
+    commit(RECIVE_USERINFO, {userInfo})
+  },
+  //异步获取用户信息
+  async getUserInfo ({commit}) {
+    const result = await reqUserinfo()
+    if (result.code === 0) {
+      const userInfo = result.data
+      commit(RECIVE_USERINFO, {userInfo})
+    }
+  },
+  //异步登出，退出登陆
+  async loginout({commit}){
+       const result = await reqLogOut()
     if (result.code===0){
-      const shops= result.data
-      commit(RECEIVE_SHOPS,{shops})
+
+      commit(RESET_USERINFO)
     }
   }
 }

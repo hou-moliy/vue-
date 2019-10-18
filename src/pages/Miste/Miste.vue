@@ -3,12 +3,17 @@
   <section class="msite">
     <!--首页头部-->
     <HeaderTop :title="address.name">
-      <span class="header_search" slot="left">
+      <router-link class="header_search" slot="left" to="/search">
         <i class="iconfont icon-sousuo"></i>
-      </span>
-      <span class="header_login" slot="right">
-        <span class="header_login_text">登陆|注册</span>
-      </span>
+      </router-link>
+      <router-link class="header_login" slot="right" :to="userInfo._id ? 'userinfo':'/login'">
+        <span class="header_login_text" v-if="!userInfo._id">
+          登陆|注册
+        </span>
+        <span class="header_login_text" v-else>
+           <i class="iconfont icon-ren"></i>
+        </span>
+      </router-link>
     </HeaderTop>
     <!--首页导航-->
     <nav class="msite_nav">
@@ -49,14 +54,13 @@
       }
     },
     mounted () {
-
     },
     components: {
       HeaderTop,
       ShopList
     },
     computed: {
-      ...mapState(['address', 'foodtypes']),
+      ...mapState(['address', 'foodtypes','userInfo']),
 
       //根据foodtypes一维数组生成一个二维数组
       // （里面的小数组，元素最大个数是8）

@@ -14,7 +14,7 @@ import element from 'element-ui'
 // eslint-disable-next-line no-unused-vars
 import mintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
-// 注册element-ui,intUI
+// 注册element-ui,mintUI
 
 import store from './store'
 Vue.use(element)

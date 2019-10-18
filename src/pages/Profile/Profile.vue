@@ -1,30 +1,30 @@
 <template>
   <div>
     <section class="profile">
-<!--      <header class="header">-->
-<!--        <a class="header_title">-->
-<!--          <span class="header_title_text">我的</span>-->
-<!--        </a>-->
-<!--      </header>-->
+      <!--      <header class="header">-->
+      <!--        <a class="header_title">-->
+      <!--          <span class="header_title_text">我的</span>-->
+      <!--        </a>-->
+      <!--      </header>-->
       <HeaderTop title="我的"></HeaderTop>
       <section class="profile-number">
-        <a href="javascript:" class="profile-link">
+        <router-link :to="userInfo._id ? '/userinfo':'/login'" class="profile-link">
           <div class="profile_image">
             <i class="iconfont icon-person"></i>
           </div>
           <div class="user-info" @click="goLogin">
-            <p class="user-info-top">登录/注册</p>
+            <p class="user-info-top" v-if="!userInfo.phone">{{userInfo.name|| '登陆/注册'}}</p>
             <p>
                 <span class="user-icon">
                   <i class="iconfont icon-shouji icon-mobile"></i>
                 </span>
-              <span class="icon-mobile-number">暂无绑定手机号</span>
+              <span class="icon-mobile-number">{{userInfo.phone||'暂无绑定手机号'}}</span>
             </p>
           </div>
           <span class="arrow">
               <i class="iconfont icon-jiantou1"></i>
             </span>
-        </a>
+        </router-link>
       </section>
       <section class="profile_info_data border-1px">
         <ul class="info_data_list">
@@ -94,29 +94,51 @@
           </div>
         </a>
       </section>
+      <section class="profile_my_order border-1px">
+        <mt-button type="danger" size="large" v-if="userInfo._id" @click="loginOut">退出登陆</mt-button>
+      </section>
     </section>
   </div>
 </template>
 <script>
-// eslint-disable-next-line no-unused-vars
-import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
+  // eslint-disable-next-line no-unused-vars
+  import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
+  import {mapState} from 'vuex'
+  import {MessageBox,Toast} from 'mint-ui'
 
-export default {
-  components: {
-    HeaderTop
-  },
-  methods: {
-    goLogin () {
-      this.$router.push({name: 'login', params: {}})
+  export default {
+    data () {
+      return {}
+    },
+    components: {
+      HeaderTop
+    },
+    methods: {
+      goLogin () {
+        this.$router.push({name: 'login', params: {}})
+      },
+      loginOut () {
+        MessageBox.confirm('Are you sure?').then(action => {
+          this.$store.dispatch('loginout')
+          Toast('恭喜你，退出登陆成功！')
+
+        }),
+          action => {
+          console.log('点击了取消')
+          }
+      }
+    },
+    computed: {
+      ...mapState(['userInfo'])
     }
   }
-}
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
-   @import "../../common/stylus/mixins.styl"
+  @import "../../common/stylus/mixins.styl"
   .profile //我的
     width 100%
     overflow hidden
+
   .header
     background-color #02a774
     position fixed

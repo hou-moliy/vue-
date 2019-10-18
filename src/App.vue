@@ -18,10 +18,10 @@ export default {
     this.getAddress()
     this.getFoodTypes()
     this.getShops()
-
+    this.getUserInfo()
   },
   methods:{
-    ...mapActions(['getAddress','getFoodTypes','getShops'])
+    ...mapActions(['getAddress','getFoodTypes','getShops','getUserInfo'])
   },
   components: {
     FooterGuide
