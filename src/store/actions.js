@@ -13,7 +13,10 @@ import {
 
   RECIVE_USERINFO,
 
-  RESET_USERINFO
+  RESET_USERINFO,
+  RECIVE_GOODS,
+  RECIVE_RATINGS,
+  RECIVE_INFO
 } from './mutation-types.js'
 
 //导入对应的api接口函数
@@ -22,7 +25,10 @@ import {
   reqFoodTypes,
   reqShops,
   reqUserinfo,
-  reqLogOut
+  reqLogOut,
+  reqShopGoods,
+  reqShopInfo,
+  reqShopRatings
 
 } from '../api'
 
@@ -86,6 +92,30 @@ export default {
     if (result.code===0){
 
       commit(RESET_USERINFO)
+    }
+  },
+  //异步获取商家信息
+  async getShopInfo({commit}){
+    const  result  = await  reqShopInfo()
+   if (result.code===0){
+
+      commit(RECIVE_INFO,{info})
+    }
+  },
+  //异步获取商家评价列表
+  async getShopRatings({commit}){
+    const  result  = await  reqShopRatings()
+   if (result.code===0){
+
+      commit(RECIVE_RATINGS,{ratings})
+    }
+  },
+  //异步获取商家列表
+  async getShopGoods({commit}){
+    const  result  = await  reqShopGoods()
+   if (result.code===0){
+
+      commit(RECIVE_GOODS,{goods})
     }
   }
 }

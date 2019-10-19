@@ -24,6 +24,9 @@
     },
     components:{
       ShopHeader
+    },
+    mounted () {
+      this.$store.dispatch('getShopInfo')
     }
 
   }

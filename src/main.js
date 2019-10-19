@@ -15,7 +15,7 @@ import element from 'element-ui'
 import mintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 // 注册element-ui,mintUI
-
+import './mock/mockSever'
 import store from './store'
 Vue.use(element)
 Vue.use(mintUI)

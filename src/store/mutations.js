@@ -13,7 +13,13 @@ import {
 
   RECIVE_USERINFO,
 
-  RESET_USERINFO
+  RESET_USERINFO,
+
+  RECIVE_GOODS,
+
+  RECIVE_INFO,
+
+  RECIVE_RATINGS
 } from './mutation-types.js'
 
 export default {
@@ -31,7 +37,16 @@ export default {
   },
   [RESET_USERINFO](state){
     state.userInfo={}
-  }
+  },
+   [RECIVE_INFO](state,{info}) {
+     state.info = info
+   } ,
+   [RECIVE_RATINGS](state,{ratings}){
+    state.ratings=ratings
+  },
+   [RECIVE_GOODS](state,{goods}){
+    state.goods=goods
+   }
 
 }
 

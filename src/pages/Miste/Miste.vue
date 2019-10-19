@@ -34,7 +34,7 @@
       <img src="./images/msite_back.svg" alt="" v-else="">
     </nav>
     <!--首页附近商家-->
-    <ShopList></ShopList>
+    <ShopList> </ShopList>
   </section>
 </template>
 <script>

@@ -8,4 +8,7 @@ export default {
   foodtypes: [], // 食品分类数组
   shops: [] ,// 商铺数组
   userInfo:{},//用户对象信息
+  goods:[],//商品列表数组
+  ratings:[],//商家评价列表数组
+  info :{},//商家信息对象
 }
