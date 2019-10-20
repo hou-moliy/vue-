@@ -77,7 +77,7 @@ export default new Router({
         },
         { // 商家页面重定向
           path: '',//表示已经请求到了shop
-          redirect: '/shopgoods'
+          redirect: '/shop/shopgoods'
         }
       ]
 

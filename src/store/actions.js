@@ -98,7 +98,7 @@ export default {
   async getShopInfo({commit}){
     const  result  = await  reqShopInfo()
    if (result.code===0){
-
+      const info = result.data;
       commit(RECIVE_INFO,{info})
     }
   },
@@ -106,7 +106,7 @@ export default {
   async getShopRatings({commit}){
     const  result  = await  reqShopRatings()
    if (result.code===0){
-
+      const ratings = result.data;
       commit(RECIVE_RATINGS,{ratings})
     }
   },
@@ -114,7 +114,7 @@ export default {
   async getShopGoods({commit}){
     const  result  = await  reqShopGoods()
    if (result.code===0){
-
+      const goods = result.data;
       commit(RECIVE_GOODS,{goods})
     }
   }
