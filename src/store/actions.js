@@ -111,11 +111,13 @@ export default {
     }
   },
   //异步获取商家列表
-  async getShopGoods({commit}){
+  async getShopGoods({commit},callback){
     const  result  = await  reqShopGoods()
    if (result.code===0){
       const goods = result.data;
       commit(RECIVE_GOODS,{goods})
+     //数据更新了，需要通知一下组件
+     callback && callback();
     }
   }
 }
