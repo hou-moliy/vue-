@@ -105,7 +105,8 @@ export default {
           top +=li.clientHeight
           tops.push(top)
         })
-
+//https://github.com/hou-moliy/vue-
+        //git remote add origin  git@
         //3.更新状态
         this.tops=tops
         console.log(tops)
