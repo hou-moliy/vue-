@@ -105,6 +105,7 @@ export default {
           top +=li.clientHeight
           tops.push(top)
         })
+
         //3.更新状态
         this.tops=tops
         console.log(tops)
