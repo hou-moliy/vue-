@@ -49,7 +49,7 @@
     data(){
 
       return{
-        isShowList: false
+        isShowList:false
       }
     },
     components: {
