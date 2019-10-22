@@ -16,7 +16,9 @@ import {
   RESET_USERINFO,
   RECIVE_GOODS,
   RECIVE_RATINGS,
-  RECIVE_INFO
+  RECIVE_INFO,
+  INCREMENT_FOOD_COUNT,
+  DECREMENT_FOOD_COUNT,
 } from './mutation-types.js'
 
 //导入对应的api接口函数
@@ -87,37 +89,45 @@ export default {
     }
   },
   //异步登出，退出登陆
-  async loginout({commit}){
-       const result = await reqLogOut()
-    if (result.code===0){
+  async loginout ({commit}) {
+    const result = await reqLogOut()
+    if (result.code === 0) {
 
       commit(RESET_USERINFO)
     }
   },
   //异步获取商家信息
-  async getShopInfo({commit}){
-    const  result  = await  reqShopInfo()
-   if (result.code===0){
-      const info = result.data;
-      commit(RECIVE_INFO,{info})
+  async getShopInfo ({commit}) {
+    const result = await reqShopInfo()
+    if (result.code === 0) {
+      const info = result.data
+      commit(RECIVE_INFO, {info})
     }
   },
   //异步获取商家评价列表
-  async getShopRatings({commit}){
-    const  result  = await  reqShopRatings()
-   if (result.code===0){
-      const ratings = result.data;
-      commit(RECIVE_RATINGS,{ratings})
+  async getShopRatings ({commit}) {
+    const result = await reqShopRatings()
+    if (result.code === 0) {
+      const ratings = result.data
+      commit(RECIVE_RATINGS, {ratings})
     }
   },
   //异步获取商家列表
-  async getShopGoods({commit},callback){
-    const  result  = await  reqShopGoods()
-   if (result.code===0){
-      const goods = result.data;
-      commit(RECIVE_GOODS,{goods})
-     //数据更新了，需要通知一下组件
-     callback && callback();
+  async getShopGoods ({commit}, callback) {
+    const result = await reqShopGoods()
+    if (result.code === 0) {
+      const goods = result.data
+      commit(RECIVE_GOODS, {goods})
+      //数据更新了，需要通知一下组件
+      callback && callback()
+    }
+  },
+  //同步更新food中的count值
+  updateFoodCount ({commit}, {isAdd, food}) {
+    if (isAdd) {
+      commit(INCREMENT_FOOD_COUNT, {food})
+    } else {
+      commit(DECREMENT_FOOD_COUNT, {food})
     }
   }
 }

@@ -4,7 +4,9 @@
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
           <li class="menu-item "  :class="{current:index===currentIndex}"
-              v-for="(good,index) in goods" :key="index">
+              v-for="(good,index) in goods" :key="index"
+            @click="clickMenuItem(index)"
+          >
              <span class="text bottom-border-1px">
                 <img class="icon" :src="good.icon" v-if="good.icon">
               {{good.name}}
@@ -18,7 +20,9 @@
             <h1 class="title">{{good.name}}</h1>
             <ul>
               <li class="food-item bottom-border-1px"
-                  v-for="(food,index) in good.foods" :key="index">
+                  v-for="(food,index) in good.foods" :key="index"
+                  @click="ShowFood(food)"
+              >
                 <div class="icon">
                   <img width="57" height="57"
                        :src="food.icon">
@@ -34,7 +38,7 @@
                      <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    CartControl
+                    <CartControl  :food="food"></CartControl>
                   </div>
                 </div>
               </li>
@@ -42,18 +46,26 @@
           </li>
         </ul>
       </div>
+      <ShopCart></ShopCart>
     </div>
+    <transition name="fade">
+      <Food :food="food" ref="FOOD"></Food>
+    </transition>
+
   </div>
 </template>
 <script>
   import {mapState} from 'vuex'
   import BScroll from 'better-scroll'
-
+  import CartControl from '../../../components/CartControl/CartControl.vue'
+  import  Food from '../../../components/Food/Food.vue'
+  import  ShopCart from '../../../components/ShopCart/ShopCart.vue'
 export default {
     data(){
       return {
         scrollY:0,//右侧滚动的y轴坐标；（滑动过程时，实时变化）
         tops:[],//所有右侧分类li的top组成的数组；（列表第一次显示后就不再变化）
+        food:{},//需要显示的food
       }
     },
   mounted () {
@@ -71,8 +83,16 @@ export default {
     ...mapState(['goods']),
 
     //计算得到当前分类的下标
-    currentIndex () {
-
+    currentIndex () { //初始和相关数据发生变化的时候执行
+      //得到条件数据
+      const {scrollY , tops} = this
+      //根据条件计算产生一个结果
+      const index = tops.findIndex((top,index)=>{
+        //scrollY>=当前top$$scroll<下一个top值
+        return scrollY>=top && scrollY<tops[index+1]
+      })
+      //返回结果
+        return index
     }
   },
   methods:{
@@ -80,15 +100,21 @@ export default {
       _initScroll(){
           //在列表显示之后才可以创建
            new BScroll('.menu-wrapper',{
-
+              click:true
            })
-         const foodsScroll =  new BScroll('.foods-wrapper',{
-                probeType:2//手指离开后，不会触发，因为惯性的滑动不会触发
+        this.foodsScroll =  new BScroll('.foods-wrapper',{
+                probeType:2,//手指离开后，不会触发，因为惯性的滑动不会触发
+                click:true
            })
            //给右侧列表绑定scroll监听
-            foodsScroll.on('scroll',({x,y})=>{
+            this.foodsScroll.on('scroll',({x,y})=>{
                this.scrollY=Math.abs(y)
             })
+          //给右侧列表绑定scroll结束的监听
+        this.foodsScroll.on('scrollEnd',({x,y}) =>{
+          console.log('scrollEnd',x,y)
+          this.scrollY = Math.abs(y)
+        })
 
       },
      //初始化tops
@@ -107,8 +133,28 @@ export default {
         })
            //3.更新状态
         this.tops=tops
-        console.log(tops)
-      }
+      },
+     clickMenuItem(index){
+        // console.log(index)
+       //使用测列表滑动到指定的位置
+       //得到目标位置的scrollY---》this.tops[index]
+       //立即更新scrollY(点击的分类项右侧，成为当前分类)
+       this.scrollY = this.tops[index]
+       //平滑滑动右侧列表
+       this.foodsScroll.scrollTo(0,-this.tops[index],300)
+     },
+    //显示点击的food---Food
+    ShowFood(food){
+        //设置food
+      this.food = food
+      //显示Food组件
+      this.$refs.FOOD.toggleFoodShow()
+    },
+  },
+  components:{
+      CartControl,
+      Food,
+    ShopCart
   }
 }
 </script>
@@ -229,4 +275,10 @@ export default {
             position: absolute
             right: 0
             bottom: 12px
+  &.fade-enter-active &.fade-leave-active
+        transition all 2s
+        opacity 0.5
+  &.fade-enter &.fade-leave-to
+        transform rotate(180deg)
+        opacity 1
 </style>
