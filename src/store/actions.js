@@ -19,6 +19,7 @@ import {
   RECIVE_INFO,
   INCREMENT_FOOD_COUNT,
   DECREMENT_FOOD_COUNT,
+  EMPTY_FOODS
 } from './mutation-types.js'
 
 //导入对应的api接口函数
@@ -129,6 +130,10 @@ export default {
     } else {
       commit(DECREMENT_FOOD_COUNT, {food})
     }
+  },
+  //同步清空购物车中的数据(不需要与后台交互就是同步)
+  emptyFoods({commit}){
+    commit(EMPTY_FOODS)
   }
 }
 

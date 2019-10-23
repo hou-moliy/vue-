@@ -22,6 +22,7 @@ import {
   RECIVE_RATINGS,
   INCREMENT_FOOD_COUNT,
   DECREMENT_FOOD_COUNT,
+  EMPTY_FOODS
 } from './mutation-types.js'
 
 export default {
@@ -71,6 +72,13 @@ export default {
       }
     }
   },
+  //清空购物车数据
+  [EMPTY_FOODS](state){
+    //先清除food中的count
+    state.cartFoods.forEach(food=>food.count=0)
+    //移除购物车中所有购物项
+     state.cartFoods=[]
+  }
 
 }
 
