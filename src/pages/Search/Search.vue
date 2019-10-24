@@ -3,100 +3,140 @@
     <section class="search">
       <!-- 头部-->
       <HeaderTop title="搜索"></HeaderTop>
-      <form class="search_form" action="#">
-        <input type="search" name="search" placeholder="请输入商家或美食名称" class="search_input">
-        <input type="submit" name="submit" class="search_submit">
+      <form class="search_form" @submit.prevent="search">
+        <input type="search" placeholder="请输入商家名称"
+               class="search_input" v-model="keyword">
+        <input type="submit" class="search_submit">
       </form>
+      <section class="list">
+      </section>
+
+      <ul class="list_container">
+        <router-link to="{path:'/shop',query:{id:item.id}" tag="li"
+                     class="list_li"
+                     v-for="item in searchShops" :key="item.id">
+          <section class="item_left">
+            <img class="restaurant_img"
+                 :src="imgBaseUrl+item.image_path"
+            >
+          </section>
+          <section class="item_right">
+            <div class="item_right_text">
+              <p>
+                <span>{{item.name}}</span>
+              </p>
+              <p>月售 {{item.recent_order_num||item.month_sales}} 单</p>
+              <p>{{item.delivery_fee||item.float_minimum_order_amount}}
+                元起送 / 距离 {{item.distance}} 公里</p>
+            </div>
+          </section>
+        </router-link>
+      </ul>
     </section>
   </div>
 </template>
 <script>
-// eslint-disable-next-line no-unused-vars
-import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
+  // eslint-disable-next-line no-unused-vars
+  import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
+  import {mapState} from 'vuex'
 
-export default {
-  components: {
-    HeaderTop
+  export default {
+    data () {
+      return {
+        keyword: '',//存放搜索的关键字
+        imgBaseUrl: 'http://cangdu.org:8001/img/',
+      }
+    },
+    components: {
+      HeaderTop
+    },
+    computed: {
+      ...mapState(['searchShops'])
+    },
+    methods: {
+      search () {
+        //得到搜索关键字
+        const keyword = this.keyword.trim()
+        //进行搜索
+        if (keyword) {
+          this.$store.dispatch('getsearchShops', keyword)
+        }
+      }
+    }
   }
-}
 </script>
-<style lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus" scoped>
   @import "../../common/stylus/mixins.styl"
-  .search //搜索
+  .search
     width 100%
+    height 100%
+    overflow hidden
 
-  .header
-    background-color #02a774
-    position fixed
-    z-index 100
-    left 0
-    top 0
-    width 100%
-    height 45px
+    .search_form
+      clearFix()
+      margin-top 45px
+      background-color #fff
+      padding 12px 8px
 
-    .header_search
-      position absolute
-      left 15px
-      top 50%
-      transform translateY(-50%)
-      width 10%
-      height 50%
+      input
+        height 35px
+        padding 0 4px
+        border-radius 2px
+        font-weight bold
+        outline none
 
-      .icon-sousuo
-        font-size 25px
-        color #fff
+        &.search_input
+          float left
+          width 79%
+          border 4px solid #f2f2f2
+          font-size 14px
+          color #333
+          background-color #f2f2f2
 
-    .header_title
-      position absolute
-      top 50%
-      left 50%
-      transform translate(-50%, -50%)
-      width 50%
-      color #fff
-      text-align center
+        &.search_submit
+          float right
+          width 18%
+          border 4px solid #02a774
+          font-size 16px
+          color #fff
+          background-color #02a774
 
-      .header_title_text
-        font-size 20px
-        color #fff
-        display block
+    .list
+      .list_container
+        background-color: #fff;
 
-    .header_login
-      font-size 14px
-      color #fff
-      position absolute
-      right 15px
-      top 50%
-      transform translateY(-50%)
+        .list_li
+          display: flex;
+          justify-content: center;
+          padding: 10px
+          border-bottom: 1px solid $bc;
 
-      .header_login_text
-        color #fff
+          .item_left
+            width 50px !important
+            height 50px !important
+            margin-right: 10px
 
-  .search_form
-    clearFix()
-    margin-top 45px
-    background-color #fff
-    padding 12px 8px
+            .restaurant_img
+              width 50px !important
+              height 50px !important
+              display block
 
-    input
-      height 35px
-      padding 0 4px
-      border-radius 2px
-      font-weight bold
-      outline none
+          .item_right
+            font-size 12px
+            flex 1
 
-      &.search_input
-        float left
-        width 79%
-        border 4px solid #f2f2f2
-        font-size 14px
-        color #333
-        background-color #f2f2f2
+            .item_right_text
+              p
+                line-height 12px
+                margin-bottom 6px
 
-      &.search_submit
-        float right
-        width 18%
-        border 4px solid #02a774
-        font-size 16px
-        color #fff
-        background-color #02a774
+                &:last-child
+                  margin-bottom 0
+
+    .search_none
+      margin: 0 auto
+      color: #333
+      background-color: #fff
+      text-align: center
+      margin-top: 0.125rem
 </style>

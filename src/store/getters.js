@@ -6,5 +6,8 @@ export default {
   },
   totalPrice (state) {
     return state.cartFoods.reduce((preTotal,food) => preTotal + food.count * food.price ,0)
+  },
+  PositiveSize(state){
+    return state.ratings.reduce((preRating,rating)=>preRating + (rating.rateType ? 0:1),0)
   }
 }

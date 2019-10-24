@@ -19,7 +19,8 @@ import {
   RECIVE_INFO,
   INCREMENT_FOOD_COUNT,
   DECREMENT_FOOD_COUNT,
-  EMPTY_FOODS
+  EMPTY_FOODS,
+  RECIVE_SERCHSHOPS
 } from './mutation-types.js'
 
 //导入对应的api接口函数
@@ -31,7 +32,8 @@ import {
   reqLogOut,
   reqShopGoods,
   reqShopInfo,
-  reqShopRatings
+  reqShopRatings,
+  reqSearchShops
 
 } from '../api'
 
@@ -98,19 +100,22 @@ export default {
     }
   },
   //异步获取商家信息
-  async getShopInfo ({commit}) {
+  async getShopInfo ({commit}, callback) {
     const result = await reqShopInfo()
     if (result.code === 0) {
       const info = result.data
       commit(RECIVE_INFO, {info})
+      callback && callback()
     }
   },
   //异步获取商家评价列表
-  async getShopRatings ({commit}) {
+  async getShopRatings ({commit}, callback) {
     const result = await reqShopRatings()
     if (result.code === 0) {
       const ratings = result.data
       commit(RECIVE_RATINGS, {ratings})
+      //数据更新了，需要通知组件
+      callback && callback()
     }
   },
   //异步获取商家列表
@@ -132,8 +137,18 @@ export default {
     }
   },
   //同步清空购物车中的数据(不需要与后台交互就是同步)
-  emptyFoods({commit}){
+  emptyFoods ({commit}) {
     commit(EMPTY_FOODS)
+  },
+  //异步获取搜索的商家列表
+  async getsearchShops ({commit, state}, keyword) {
+    //首先要从state里面取出数据
+    const geohash = state.latitude + ',' + state.longitude
+    const result = await reqSearchShops(geohash, keyword)
+    if (result.code === 0) {
+      const searchShops = result.data
+      commit(RECIVE_SERCHSHOPS,searchShops)
+    }
   }
 }
 

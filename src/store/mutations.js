@@ -22,7 +22,8 @@ import {
   RECIVE_RATINGS,
   INCREMENT_FOOD_COUNT,
   DECREMENT_FOOD_COUNT,
-  EMPTY_FOODS
+  EMPTY_FOODS,
+  RECIVE_SERCHSHOPS
 } from './mutation-types.js'
 
 export default {
@@ -55,8 +56,8 @@ export default {
     if (!food.count) {//这是第一次增加
       // food.count = 1 //新增属性，没有数据绑定的
       //对象，属性名(这里要写成一个字符串那样，不然那就是一个变量)，属性值
-      Vue.set(food,'count',1) //让新增的属性也有数据绑定
-     //只有第一次添加才把food添加到carFoods中
+      Vue.set(food, 'count', 1) //让新增的属性也有数据绑定
+      //只有第一次添加才把food添加到carFoods中
       state.cartFoods.push(food)
     } else {
       food.count++
@@ -65,19 +66,22 @@ export default {
   },
   [DECREMENT_FOOD_COUNT] (state, {food}) {
     if (food.count) {//只有大于0才减
-       food.count--
-      if (food.count===0){
+      food.count--
+      if (food.count === 0) {
         //将food从cartFoods中移除
-        state.cartFoods.splice(state.cartFoods.indexOf(food),1)
+        state.cartFoods.splice(state.cartFoods.indexOf(food), 1)
       }
     }
   },
   //清空购物车数据
-  [EMPTY_FOODS](state){
+  [EMPTY_FOODS] (state) {
     //先清除food中的count
-    state.cartFoods.forEach(food=>food.count=0)
+    state.cartFoods.forEach(food => food.count = 0)
     //移除购物车中所有购物项
-     state.cartFoods=[]
+    state.cartFoods = []
+  },
+  [RECIVE_SERCHSHOPS] (state, searchshops) {
+    state.searchShops = searchshops
   }
 
 }
