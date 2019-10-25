@@ -10,7 +10,7 @@
       </form>
       <section class="list" v-if="!noSearchShops">
         <ul class="list_container">
-        <router-link to="{path:'/shop',query:{id:item.id}" tag="li"
+        <router-link :to="{path:'/shop',query:{id:item.id}}" tag="li"
                      class="list_li"
                      v-for="item in searchShops" :key="item.id">
           <section class="item_left">
@@ -61,7 +61,6 @@
         const keyword = this.keyword.trim()
         //进行搜索
         if (keyword) {
-          console.log(this.noSearchShops)
           this.$store.dispatch('getsearchShops', keyword)
         }
       }

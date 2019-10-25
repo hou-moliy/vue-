@@ -54,7 +54,7 @@
   import BScroll from 'better-scroll'
   import {mapState} from 'vuex'
 
-  export default {
+  export default  {
     data () {
       return {
         supportClasses: ['activity-green', 'activity-red', 'activity-orange'],
