@@ -8,10 +8,8 @@
                class="search_input" v-model="keyword">
         <input type="submit" class="search_submit">
       </form>
-      <section class="list">
-      </section>
-
-      <ul class="list_container">
+      <section class="list" v-if="!noSearchShops">
+        <ul class="list_container">
         <router-link to="{path:'/shop',query:{id:item.id}" tag="li"
                      class="list_li"
                      v-for="item in searchShops" :key="item.id">
@@ -32,19 +30,22 @@
           </section>
         </router-link>
       </ul>
+      </section>
+      <div class="search_none" v-else>很抱歉！搜索无结果</div>
     </section>
   </div>
 </template>
 <script>
-  // eslint-disable-next-line no-unused-vars
   import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
   import {mapState} from 'vuex'
+  import BScroll from 'better-scroll'
 
   export default {
     data () {
       return {
         keyword: '',//存放搜索的关键字
         imgBaseUrl: 'http://cangdu.org:8001/img/',
+        noSearchShops:false,//是否显示无搜索结果,默认不显示
       }
     },
     components: {
@@ -55,11 +56,22 @@
     },
     methods: {
       search () {
+        this.noSearchShops = false
         //得到搜索关键字
         const keyword = this.keyword.trim()
         //进行搜索
         if (keyword) {
+          console.log(this.noSearchShops)
           this.$store.dispatch('getsearchShops', keyword)
+        }
+      }
+    },
+    watch:{
+      getsearchShops(value){
+        if (!value.length){//搜索到相关--没有数据
+          this.noSearchShops = true//显示搜索无结果
+        }else {//搜索到相关--有数据
+           this.noSearchShops = false//不显示搜索无结果
         }
       }
     }
@@ -110,15 +122,14 @@
           justify-content: center;
           padding: 10px
           border-bottom: 1px solid $bc;
+          align-items center
 
           .item_left
-            width 50px !important
-            height 50px !important
             margin-right: 10px
 
             .restaurant_img
-              width 50px !important
-              height 50px !important
+              width 50px
+              height 50px
               display block
 
           .item_right

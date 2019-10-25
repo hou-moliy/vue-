@@ -64,7 +64,7 @@
                 <span class="item" v-for="(recom,index) in rating.recommend"
                       :key="index">{{recom}}</span>
               </div>
-              <div class="time">2016-07-23 21:52:44</div>
+              <div class="time">{{rating.rateTime|date-format}}</div>
             </div>
           </li>
         </ul>

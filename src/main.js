@@ -17,6 +17,12 @@ import 'mint-ui/lib/style.css'
 // 注册element-ui,mintUI
 import './mock/mockSever'
 import store from './store'
+import  './filters/filter'//加载过滤器
+import VueLazyload from  'vue-lazyload'
+import loading from './common/images/loading.gif'
+Vue.use(VueLazyload,{
+  loading
+})
 Vue.use(element)
 Vue.use(mintUI)
 Vue.prototype.axios = axios

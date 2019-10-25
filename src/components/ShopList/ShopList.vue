@@ -10,7 +10,7 @@
           <li class="shop_li border-1px" v-for="(shop ,index) in shops" :key="index" @click="$router.push('/shop')">
             <a>
               <div class="shop_left">
-                <img class="shop_img" src="">
+                <img class="shop_img" :src="baseImgUrl+shop.image_path">
               </div>
               <div class="shop_right">
                 <section class="shop_detail_header">
