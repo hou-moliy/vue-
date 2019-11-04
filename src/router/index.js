@@ -2,15 +2,15 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // 导入首页的路由组件
 
-const Miste = ()=>import('../pages/Miste/Miste.vue')
+const Miste = () => import('../pages/Miste/Miste.vue')
 
-const Order = ()=>import('../pages/Order/Order.vue')
+const Order = () => import('../pages/Order/Order.vue')
 
-const Profile = ()=>import('../pages/Profile/Profile.vue')
+const Profile = () => import('../pages/Profile/Profile.vue')
 
-const Search = ()=>import('../pages/Search/Search.vue')
+const Search = () => import('../pages/Search/Search.vue')
 
-const Login = ()=>import('../pages/Login/Login.vue')
+const Login = () => import('../pages/Login/Login.vue')
 
 import Shop from '../pages/Shop/Shop.vue'
 import ShopGoods from '../pages/Shop/ShopGoods/ShopGoods.vue'

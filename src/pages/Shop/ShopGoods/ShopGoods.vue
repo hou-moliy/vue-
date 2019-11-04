@@ -3,9 +3,9 @@
     <div class="goods">
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
-          <li class="menu-item "  :class="{current:index===currentIndex}"
+          <li class="menu-item " :class="{current:index===currentIndex}"
               v-for="(good,index) in goods" :key="index"
-            @click="clickMenuItem(index)"
+              @click="clickMenuItem(index)"
           >
              <span class="text bottom-border-1px">
                 <img class="icon" :src="good.icon" v-if="good.icon">
@@ -35,10 +35,10 @@
                     <span>好评率 {{food.rating}}%</span></div>
                   <div class="price">
                     <span class="now">￥{{food.price}}</span>
-                     <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
+                    <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <CartControl  :food="food"></CartControl>
+                    <CartControl :food="food"></CartControl>
                   </div>
                 </div>
               </li>
@@ -58,105 +58,106 @@
   import {mapState} from 'vuex'
   import BScroll from 'better-scroll'
   import CartControl from '../../../components/CartControl/CartControl.vue'
-  import  Food from '../../../components/Food/Food.vue'
-  import  ShopCart from '../../../components/ShopCart/ShopCart.vue'
-export default {
-    data(){
+  import Food from '../../../components/Food/Food.vue'
+  import ShopCart from '../../../components/ShopCart/ShopCart.vue'
+
+  export default {
+    data () {
       return {
-        scrollY:0,//右侧滚动的y轴坐标；（滑动过程时，实时变化）
-        tops:[],//所有右侧分类li的top组成的数组；（列表第一次显示后就不再变化）
-        food:{},//需要显示的food
+        scrollY: 0,//右侧滚动的y轴坐标；（滑动过程时，实时变化）
+        tops: [],//所有右侧分类li的top组成的数组；（列表第一次显示后就不再变化）
+        food: {},//需要显示的food
       }
     },
-  mounted () {
-    this.$store.dispatch('getShopGoods',()=>{
-         this.$nextTick(()=>{
-               //这个函数在数据更新后执行
-                this._initScroll()
-                this._initTops()
-         })
+    mounted () {
+      this.$store.dispatch('getShopGoods', () => {
+        this.$nextTick(() => {
+          //这个函数在数据更新后执行
+          this._initScroll()
+          this._initTops()
+        })
 
-    })
-
-  },
-  computed:{
-    ...mapState(['goods']),
-
-    //计算得到当前分类的下标
-    currentIndex () { //初始和相关数据发生变化的时候执行
-      //得到条件数据
-      const {scrollY , tops} = this
-      //根据条件计算产生一个结果
-      const index = tops.findIndex((top,index)=>{
-        //scrollY>=当前top$$scroll<下一个top值
-        return scrollY>=top && scrollY<tops[index+1]
       })
-      //返回结果
+
+    },
+    computed: {
+      ...mapState(['goods']),
+
+      //计算得到当前分类的下标
+      currentIndex () { //初始和相关数据发生变化的时候执行
+        //得到条件数据
+        const {scrollY, tops} = this
+        //根据条件计算产生一个结果
+        const index = tops.findIndex((top, index) => {
+          //scrollY>=当前top$$scroll<下一个top值
+          return scrollY >= top && scrollY < tops[index + 1]
+        })
+        //返回结果
         return index
-    }
-  },
-  methods:{
+      }
+    },
+    methods: {
       //初始化滚动条
-      _initScroll(){
-          //在列表显示之后才可以创建
-           new BScroll('.menu-wrapper',{
-              click:true
-           })
-        this.foodsScroll =  new BScroll('.foods-wrapper',{
-                probeType:2,//手指离开后，不会触发，因为惯性的滑动不会触发
-                click:true
-           })
-           //给右侧列表绑定scroll监听
-            this.foodsScroll.on('scroll',({x,y})=>{
-               this.scrollY=Math.abs(y)
-            })
-          //给右侧列表绑定scroll结束的监听
-        this.foodsScroll.on('scrollEnd',({x,y}) =>{
-          console.log('scrollEnd',x,y)
+      _initScroll () {
+        //在列表显示之后才可以创建
+        new BScroll('.menu-wrapper', {
+          click: true
+        })
+        this.foodsScroll = new BScroll('.foods-wrapper', {
+          probeType: 2,//手指离开后，不会触发，因为惯性的滑动不会触发
+          click: true
+        })
+        //给右侧列表绑定scroll监听
+        this.foodsScroll.on('scroll', ({x, y}) => {
+          this.scrollY = Math.abs(y)
+        })
+        //给右侧列表绑定scroll结束的监听
+        this.foodsScroll.on('scrollEnd', ({x, y}) => {
+          console.log('scrollEnd', x, y)
           this.scrollY = Math.abs(y)
         })
 
       },
-     //初始化tops
-      _initTops(){
+      //初始化tops
+      _initTops () {
         //1.初始化tops
-         const tops = []
-         let top=0
+        const tops = []
+        let top = 0
         tops.push(top)
         //2.收集
         // 找到所有分类的li
-        const  lis = this.$refs.foodsUL.children
+        const lis = this.$refs.foodsUL.children
         //把伪数组变成真数组
-        Array.prototype.slice.call(lis).forEach(li=>{
-          top +=li.clientHeight
+        Array.prototype.slice.call(lis).forEach(li => {
+          top += li.clientHeight
           tops.push(top)
         })
-           //3.更新状态
-        this.tops=tops
+        //3.更新状态
+        this.tops = tops
       },
-     clickMenuItem(index){
+      clickMenuItem (index) {
         // console.log(index)
-       //使用测列表滑动到指定的位置
-       //得到目标位置的scrollY---》this.tops[index]
-       //立即更新scrollY(点击的分类项右侧，成为当前分类)
-       this.scrollY = this.tops[index]
-       //平滑滑动右侧列表
-       this.foodsScroll.scrollTo(0,-this.tops[index],300)
-     },
-    //显示点击的food---Food
-    ShowFood(food){
+        //使用测列表滑动到指定的位置
+        //得到目标位置的scrollY---》this.tops[index]
+        //立即更新scrollY(点击的分类项右侧，成为当前分类)
+        this.scrollY = this.tops[index]
+        //平滑滑动右侧列表
+        this.foodsScroll.scrollTo(0, -this.tops[index], 300)
+      },
+      //显示点击的food---Food
+      ShowFood (food) {
         //设置food
-      this.food = food
-      //显示Food组件
-      this.$refs.FOOD.toggleFoodShow()
+        this.food = food
+        //显示Food组件
+        this.$refs.FOOD.toggleFoodShow()
+      },
     },
-  },
-  components:{
+    components: {
       CartControl,
       Food,
-    ShopCart
+      ShopCart
+    }
   }
-}
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../../common/stylus/mixins.styl"
@@ -275,10 +276,12 @@ export default {
             position: absolute
             right: 0
             bottom: 12px
+
   &.fade-enter-active &.fade-leave-active
-        transition all 2s
-        opacity 0.5
+    transition all 2s
+    opacity 0.5
+
   &.fade-enter &.fade-leave-to
-        transform rotate(180deg)
-        opacity 1
+    transform rotate(180deg)
+    opacity 1
 </style>

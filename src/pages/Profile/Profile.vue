@@ -1,11 +1,6 @@
 <template>
   <div>
     <section class="profile">
-      <!--      <header class="header">-->
-      <!--        <a class="header_title">-->
-      <!--          <span class="header_title_text">我的</span>-->
-      <!--        </a>-->
-      <!--      </header>-->
       <HeaderTop title="我的"></HeaderTop>
       <section class="profile-number">
         <router-link :to="userInfo._id ? '/userinfo':'/login'" class="profile-link">
