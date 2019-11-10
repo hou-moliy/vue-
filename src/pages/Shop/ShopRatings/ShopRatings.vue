@@ -44,6 +44,7 @@
       </div>
       <div class="rating-wrapper">
         <ul>
+          <p class="drop-down" v-if="dropDown">释放立即刷新...</p>
           <li class="rating-item" v-for="(rating,index) in filterRatings" :key="index">
             <div class="avatar">
               <img width="28" height="28"
@@ -67,6 +68,7 @@
               <div class="time">{{rating.rateTime|date-format}}</div>
             </div>
           </li>
+          <p class="loading">{{moreTxt}}</p>
         </ul>
       </div>
     </div>
@@ -82,7 +84,9 @@
       return {
         onlyShowText: true,//是否只显示有文本内容的
         selectedType: 2,//选择的评价类型:0满意，1不满意，2全部
-
+        dropDown: false,//显示下拉刷新---否
+        moreTxt: 'Load more',
+        noMoreTxt: 'There is no more data'
       }
     },
     components: {
@@ -92,46 +96,56 @@
       this.$store.dispatch('getShopRatings', () => {
         this.$nextTick(() => {
           //在列表显示之后才可以创建
-          new BScroll(this.$refs.ratings, {
-            click: true
-          })
+          this._initMyScroll()
         })
       })
-
     },
-    computed: {
-      ...mapState(['info', 'ratings']),
-      filterRatings () {
-        //得到相关的数据
-        const {ratings, onlyShowText, selectedType} = this
-        //进行计算返回新的数组（产生一个过滤新数组）
-        return ratings.filter(rating => {
-          //条件1：
-          //selectType:0/1/2
-          //rateType:0/1
-          //selectedType===2就直接显示所有，不用看rateType
-          //selectedType===rateType
-          //最后：selectedType===2||selectedType===rateType
-          //条件2：
-          //onlyShowText:true/false
-          // text:有值/没有值
-          //如果onlyShowText=false,就不用管text是否有值
-          //onlyShowText===true 就看text.length>0
-          //最后：!onlyShowText||text.length>0
-          const {rateType, text} = rating
+    computed:
+      {
+        ...
+          mapState(['info', 'ratings']),
+        filterRatings () {
+          //得到相关的数据
+          const {ratings, onlyShowText, selectedType} = this
+          //进行计算返回新的数组（产生一个过滤新数组）
+          return ratings.filter(rating => {
+            //条件1：
+            //selectType:0/1/2
+            //rateType:0/1
+            //selectedType===2就直接显示所有，不用看rateType
+            //selectedType===rateType
+            //最后：selectedType===2||selectedType===rateType
+            //条件2：
+            //onlyShowText:true/false
+            // text:有值/没有值
+            //如果onlyShowText=false,就不用管text是否有值
+            //onlyShowText===true 就看text.length>0
+            //最后：!onlyShowText||text.length>0
+            const {rateType, text} = rating
 
-          return (selectedType === 2 || selectedType === rateType )&&( !onlyShowText || text.length > 0)
-        })
+            return (selectedType === 2 || selectedType === rateType) && (!onlyShowText || text.length > 0)
+          })
 
-      },
-      ...mapGetters(['PositiveSize'])
-    },
+        }
+        ,
+        ...
+          mapGetters(['PositiveSize'])
+      }
+    ,
     methods: {
       SelectType (type) {
         this.selectedType = type
-      },
+      }
+      ,
       toggleShowText () {
         this.onlyShowText = !this.onlyShowText
+      },
+      _initMyScroll () {
+        this.myScroll = new BScroll(this.$refs.ratings, {
+          click: true,
+          scrollbar: true,
+          fade: true,
+        })
       }
     }
   }

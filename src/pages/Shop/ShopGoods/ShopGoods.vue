@@ -16,7 +16,7 @@
         </ul>
       </div>
       <div class="foods-wrapper" ref="foodsWrapper">
-        <ul ref="foodsUL">
+        <ul ref="foodsUL" :Height="autoHeight">
           <p class="drop-down" v-if="dropDown">释放立即刷新...</p>
           <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
@@ -45,6 +45,7 @@
                 </div>
               </li>
             </ul>
+
           </li>
           <p class="drop-down" v-if="UpLoad">上拉加载更多...</p>
         </ul>
@@ -71,7 +72,8 @@
         tops: [],//所有右侧分类li的top组成的数组；（列表第一次显示后就不再变化）
         food: {},//需要显示的food
         dropDown: false,//下拉刷新显示
-        UpLoad:false,//上拉加载更多
+        UpLoad: false,//上拉加载更多
+        autoHeight: ''
       }
     },
     mounted () {
@@ -126,20 +128,26 @@
         this.foodsScroll.on('scrollEnd', ({x, y}) => {
           console.log('scrollEnd', x, y)
           //下拉动作结束
-          if (y < 50) {
+          if (Math.abs(y) < 50) {
             this.dropDown = false
             console.log('下拉刷新成功！')
             console.log(this.dropDown)
           }
           console.log(this.dropDown)
           this.scrollY = Math.abs(y)
-          //上拉加载，总高度>下拉的高度+10,触发加载更多
-          if (this.scrollY > scrollY+10 ){
-            console.log("加载更多")
+          //上拉加载，总高度>上拉的高度+10,触发加载更多
+          let maxHeight = window.getComputedStyle(this.$refs.foodsUL).height
+          console.log(window.getComputedStyle(this.$refs.foodsUL).height)
+          console.log(this.scrollY)
+          if (maxHeight < (this.scrollY + 600 + 'px')) {
+            console.log('加载更多')
             //使用refresh方法来更新scroll 解决无法滚动的问题
-            this.UpLoad = true
-          }else {
-            this.UpLoad  =  false
+            setTimeout(() => {
+              this.UpLoad = true
+            }, 100)
+            this.UpLoad = false
+          } else {
+            this.UpLoad = false
           }
         })
 
